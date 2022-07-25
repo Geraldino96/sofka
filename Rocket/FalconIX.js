@@ -1,3 +1,4 @@
+const Rocket = require("../Clases/rocket");
 const FalconIX = new Rocket({
     name: "Falcon IX",
     activity: "2010 - Act",

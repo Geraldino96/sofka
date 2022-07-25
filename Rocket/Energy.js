@@ -1,3 +1,5 @@
+const Rocket = require("../Clases/rocket");
+
 const Energy = new Rocket({
     name: "Energy",
     weight: "2400 Ton",

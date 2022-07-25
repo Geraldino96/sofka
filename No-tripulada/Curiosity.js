@@ -1,3 +1,4 @@
+const Ship = require("../Clases/ship");
 const Curiosity = new Ship({
     name: "Curiosity",
     planet: "Mars",
