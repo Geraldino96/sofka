@@ -1,10 +1,8 @@
-//Haciendo uso del modulador require llamo al paquete inquirer, la librería mongoose, y los archivos del proyecto que exporto desde otras carpetas
 const inquirer = require('inquirer');
 const mongoose = require('mongoose');
 const Rocket = require('./rocket.js');
 const Ship = require('./ship.js');
 const SpaceShip = require('./spaceShip')
-//Me conecto al cluster gratuito de Atlas
 mongoose.connect('mongodb+srv://geraldino96:QLNDw9ghcpTq2Czg@cluster0.dmtvy.mongodb.net/spaceShip?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,
@@ -12,25 +10,25 @@ mongoose.connect('mongodb+srv://geraldino96:QLNDw9ghcpTq2Czg@cluster0.dmtvy.mong
   }
 )
   .then(() => {
-    //console.log('DB CONECTION SUCCESFUL'); para comprobar la conexión
+    //console.log('DB CONECTION SUCCESFUL');
   }).catch(e => {
     console.error(e);
   })
-//Uso preguntas de inquirer para seleccionar la opción del menú
 const questions = [
   {
     type: 'number',
     name: 'option',
-    message: "Welcome to the menu.\nChoose a ship to look into its properties and launch it!\n1. Saturn V\n2. Energy\n3. FalconIX\n4. Curiosity\n5. VeneraIV\n6. VeneraIX\n7. ISS\n8. Salyut\n9. Skylab\n10. Create ship\n What's your option?",
+    message: "Welcome to the menu.\nChoose a ship to look into its properties and launch it!\n1. Saturn V\n2. Energy\n3. FalconIX\n4. Curiosity\n5. VeneraIV\n6. VeneraIX\n7. ISS\n8. Salyut\n9. Skylab\n10. Create ship\n What's your option? \n11. Finish",
   },
 ];
-//Con la función res encapsulo el switch y le paso la opción seleccionado en "questions"
-const res = async () => {
-  const answer = await inquirer.prompt(questions);
-  console.log(answer);
 
-  switch (answer.option) {
-    //En cada uno de los casos llamo a la nave del inventario seteado en la base de datos, luego haciendo uso de la clase Rocket o Ship, genero una instancia y ejecuto sus metodos
+
+const res = async () => {
+ 
+  outside:
+ while (true){
+    const answer = await inquirer.prompt(questions);
+    switch (answer.option) {
     case 1:
 
       const spaceships = await SpaceShip.find({ name: /^Saturn V/ });;
@@ -129,44 +127,36 @@ const res = async () => {
       });
       console.log(Skylab.shipLaunch(), Skylab.shipLanding())
       break;
-      //En el caso 10, genero 3 preguntas para captar la entrada del usuario y le paso los valores a SpaceShip.create para agregar la nueva nave a la base de datos
     case 10:
       const questions1 = [
         {
           type: 'input',
           name: 'name',
           message: "Set a name for your ship!",
-        }
-      ];
-      const questions2 = [
+        },
         {
           type: 'input',
           name: 'weight',
           message: "Weight?",
-        }
-      ];
-      const questions3 = [
+        },
         {
           type: 'input',
           name: 'thrust',
           message: "Thrust?",
         }
       ];
-      const res1 = async () => {
+
         const answer1 = await inquirer.prompt(questions1);
-        const answer2 = await inquirer.prompt(questions2);
-        const answer3 = await inquirer.prompt(questions3);
         console.log(answer1)
-        console.log(answer2)
-        console.log(answer3)
-      }
-      res1();
-      const newDoc = await SpaceShip.create({
-        name: `${questions1}`,
-        weight: `${questions2}`,
-        thrust: `${questions3}`,
-      });
+      
+      const newDoc = await SpaceShip.create(answer1);
       break;
+      case 11: 
+        break outside;
   }
+ }
+  mongoose.connection.close()
+  console.log('Finish execute')
 }
-res();
+
+res()
